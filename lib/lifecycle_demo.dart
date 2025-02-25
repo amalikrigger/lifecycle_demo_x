@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lifecycle_demo_x/theme_provider.dart';
+import 'package:provider/provider.dart';
 
+import 'auth_provider.dart';
+import 'language_provider.dart';
 import 'lifecycle_demo_screen.dart';
 
 class LifecycleDemo extends StatefulWidget {
@@ -22,19 +25,26 @@ class _LifecycleDemoState extends State<LifecycleDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return ThemeProvider(
-      themeMode: _themeMode,
-      toggleTheme: _toggleTheme,
-      child: Builder(
-        builder: (context) {
-          return MaterialApp(
-            title: 'Lifecycle Demo',
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeProvider.of(context)?.themeMode ?? ThemeMode.light,
-            home: const LifecycleDemoScreen(),
-          );
-        },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: ThemeProvider(
+        themeMode: _themeMode,
+        toggleTheme: _toggleTheme,
+        child: Builder(
+          builder: (context) {
+            return MaterialApp(
+              title: 'Lifecycle Demo',
+              theme: ThemeData.light(),
+              darkTheme: ThemeData.dark(),
+              themeMode:
+                  ThemeProvider.of(context)?.themeMode ?? ThemeMode.light,
+              home: const LifecycleDemoScreen(),
+            );
+          },
+        ),
       ),
     );
   }
